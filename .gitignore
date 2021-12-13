@@ -4,6 +4,9 @@ credentials.txt
 # Draft notebook
 draft.ipynb
 
+# Pickle Binaries
+*.pkl
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
