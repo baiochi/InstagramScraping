@@ -8,8 +8,16 @@ import numpy as np
 import instaloader
 from datetime import datetime
 from itertools import dropwhile, takewhile, islice
-from varname import nameof
 from math import ceil, floor
+
+# ANSI Colors
+c = {
+    'R' :  '\33[0;31m',
+    'B' :  '\33[0;34m',
+    'Y' :  '\33[1;33m',
+    'G' :  '\33[4m',
+    'W' :  '\33[1;37m'
+}
 
 # LOAD CREDENTIALS
 def load_credentials(file_name):
@@ -64,30 +72,25 @@ def get_followers(profile):
 # GET POST LIKES
 def get_post_likes(post, index=0):
 
-    print(f'Extracting Likes for Post #{index+1} - {post.shortcode}', end=' ')
-    before = datetime.now()
+    print(f'{c["G"]}Post #{index+1}{c["W"]} <{post.shortcode}> - Extracting Likes...')
+    
     post_likes = [user for user in post.get_likes()]
-    tdelta = datetime.now() - before
-    print(f'done! {tdelta.seconds} seconds')
 
     return post_likes
 
 # ADD ENGAGED USER LIST
 def add_engaged_users(user_list, post_likes):
 
-    print(f'Add to engaged_users list... ', end=' ')
-    before = datetime.now()
+    print(f'Add to engaged_users list... ')
     engaged_users = user_list | set([user.username for user in post_likes])
-    tdelta = datetime.now() - before
-    print(f'done in {tdelta.seconds} s')
 
     return engaged_users
 
 # CREATE POST INFO DATA FRAME
 def create_dataframe(df, post, like_count):
 
-    print(f'Creating Data Frame... ', end=' ')
-    before = datetime.now()
+    print(f'Creating Data Frame... ')
+    
     df = pd.concat([df,
                     pd.DataFrame({
                         'shortcode' : post.shortcode,
@@ -104,12 +107,10 @@ def create_dataframe(df, post, like_count):
                         'caption_hashtags' : ','.join(post.caption_hashtags)
                     }, index=[0])
                     ])
-    tdelta = datetime.now() - before
-    print(f'done in {tdelta.seconds} s')
 
     return df
 
-# 
+# ANALYSE PROFILE FOLLOWERS
 def analyse_profile(followers, engaged_users, log=True):
     
     ghosts_followers = followers - engaged_users
